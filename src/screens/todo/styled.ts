@@ -1,6 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
-import { colors } from 'src/styles';
 import styled from 'styled-components/native';
+
+import { colors } from 'src/styles';
 
 export const ToDoContainer = styled.View`
   flex: 1;
@@ -69,7 +70,6 @@ export const ToDoListContainer = styled.View`
   justify-content: space-between;
   align-items: flex-start;
   padding: 16px 0;
-  border: 1px solid red;
 `;
 
 export const ToDoListItem = styled.Text`

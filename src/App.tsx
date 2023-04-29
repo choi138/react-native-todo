@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { ToDoScreen, } from './screens';
+import { ToDoScreen } from './screens';
 
 const Stack = createStackNavigator();
 
