@@ -1,10 +1,12 @@
 import React from "react";
-import { ScrollView, Text } from "react-native";
+import * as S from "./styled";
 
-export const TodoScreen: React.FC = () => {
+export const ToDoScreen: React.FC = () => {
     return (
-        <ScrollView>
-            <Text>Todo Screen</Text>
-        </ScrollView>
+        <S.ToDoContainer>
+            <S.ToDoTitleWrap>
+                <S.ToDoTitle>ToDoList</S.ToDoTitle>
+            </S.ToDoTitleWrap>
+        </S.ToDoContainer>
     )
 }
