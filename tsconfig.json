@@ -3,17 +3,5 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    }
   },
-  "include": [
-    "src",
-  ],
-  "exclude": [
-    "node_modules",
-    "babel.config.js",
-  ]
 }
