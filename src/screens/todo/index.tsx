@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as S from './styled';
 import { colors } from 'src/styles';
-import { Button } from 'react-native';
+import { Button, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 export interface ToDoProps {
   [key: string]: {
@@ -11,19 +12,22 @@ export interface ToDoProps {
   }
 }
 
+export const STORAGE_TODO_KEY = '@toDos';
+
 export const ToDoScreen: React.FC = () => {
   const [text, setText] = useState<string>('');
-  const [toDos, setToDos] = useState<object>({}); 1
+  const [toDos, setToDos] = useState<ToDoProps>({});
+  const [loading, setLoading] = useState<boolean>(true);
   const [completed, setCompleted] = useState<boolean>(false);
 
-  const onChangeText = (payload: string) => { // payload is 
+  const onChangeText = (payload: string) => {
     setText(payload);
   };
 
-  const saveToDo = async (toSave: ToDoProps) => {
+  const saveToDos = async (toSave: ToDoProps) => {
     const saveToDos = JSON.stringify(toSave)
     try {
-      await AsyncStorage.setItem('toDos', saveToDos);
+      await AsyncStorage.setItem(STORAGE_TODO_KEY, saveToDos);
     }
     catch (e) {
       console.log(e);
@@ -34,17 +38,42 @@ export const ToDoScreen: React.FC = () => {
     if (text === '') {
       return;
     }
-
     const newToDos = { ...toDos, [Date.now()]: { text: text, completed: completed } }
     setToDos(newToDos);
+    saveToDos(newToDos);
     setText('');
   }
 
-  return (
+  const loadToDos = async () => {
+    try {
+      const getToDos = await AsyncStorage.getItem(STORAGE_TODO_KEY);
+      setToDos(getToDos ? JSON.parse(getToDos) : []);
+      setLoading(false);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    loadToDos();
+  }, [])
+
+  return ( 
     <S.ToDoContainer>
       <S.ToDoTitleWrap>
         <S.ToDoTitle>ToDoList</S.ToDoTitle>
       </S.ToDoTitleWrap>
+      <S.ToDoList>
+        {Object.keys(toDos).map((key, i) => {
+          const toDo = toDos[key];
+          return (
+            <S.ToDoListContainer key={i}>
+              <S.ToDoListItem>{toDo.text}</S.ToDoListItem>
+            </S.ToDoListContainer>
+          )
+        })}
+      </S.ToDoList>
       <S.ToDoInputContainer>
         <S.ToDoInput
           multiline
@@ -56,9 +85,11 @@ export const ToDoScreen: React.FC = () => {
           placeholder="텍스트를 입력해주세요..."
           placeholderTextColor={colors.purple}
         />
-        <S.ToDoButtonWrap>
-          <S.ToDoButton>확인</S.ToDoButton>
-        </S.ToDoButtonWrap>
+        <TouchableOpacity onPress={addToDo}>
+          <S.ToDoButtonWrap>
+            <S.ToDoButton>확인</S.ToDoButton>
+          </S.ToDoButtonWrap>
+        </TouchableOpacity>
       </S.ToDoInputContainer>
     </S.ToDoContainer>
   );
