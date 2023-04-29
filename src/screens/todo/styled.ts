@@ -1,3 +1,4 @@
+import { AntDesign } from '@expo/vector-icons';
 import { colors } from 'src/styles';
 import styled from 'styled-components/native';
 
@@ -64,6 +65,7 @@ export const ToDoList = styled.ScrollView`
 
 export const ToDoListContainer = styled.View`
   flex: 1;
+  flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
   padding: 16px 0;
@@ -74,4 +76,9 @@ export const ToDoListItem = styled.Text`
   font-size: 20px;
   font-weight: 600;
   color: ${colors.purple};
+`;
+
+export const ToDoIcon = styled(AntDesign)`
+  transition: all 200ms ease-in-out;
+  color: ${colors.skyBlue};
 `;

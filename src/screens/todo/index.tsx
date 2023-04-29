@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import * as S from './styled';
 import { colors } from 'src/styles';
-import { Button, Text } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export interface ToDoProps {
   [key: string]: {
@@ -55,11 +55,19 @@ export const ToDoScreen: React.FC = () => {
     }
   }
 
+  const checkToDo = async (key: string) => {
+    setCompleted(!completed);
+    const newToDos = { ...toDos }
+    newToDos[key].completed = !newToDos[key].completed;
+    setToDos(newToDos);
+    saveToDos(newToDos);
+  }
+
   useEffect(() => {
     loadToDos();
   }, [])
 
-  return ( 
+  return (
     <S.ToDoContainer>
       <S.ToDoTitleWrap>
         <S.ToDoTitle>ToDoList</S.ToDoTitle>
@@ -70,6 +78,9 @@ export const ToDoScreen: React.FC = () => {
           return (
             <S.ToDoListContainer key={i}>
               <S.ToDoListItem>{toDo.text}</S.ToDoListItem>
+              <TouchableWithoutFeedback onPress={() => checkToDo(key)}>
+                <S.ToDoIcon {...toDo.completed ? { name: "checkcircle" } : { name: "checkcircleo" }} size={24} />
+              </TouchableWithoutFeedback>
             </S.ToDoListContainer>
           )
         })}
