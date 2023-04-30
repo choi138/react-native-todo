@@ -74,11 +74,13 @@ export const ToDoListContainer = styled.View`
 
 export const ToDoListItem = styled.Text`
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   color: ${colors.purple};
 `;
 
-export const ToDoIcon = styled(AntDesign)`
-  transition: all 200ms ease-in-out;
-  color: ${colors.skyBlue};
+export const ToDoIconContainer = styled.View`
+  flex-direction: row;
+  column-gap: 10px;
+  justify-content: space-between;
+  align-items: flex-start;
 `;

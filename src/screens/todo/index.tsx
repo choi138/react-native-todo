@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Alert } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AntDesign } from '@expo/vector-icons';
 
 import { colors } from 'src/styles';
 
@@ -63,6 +65,22 @@ export const ToDoScreen: React.FC = () => {
     await saveToDos(newToDos);
   };
 
+  const deleteToDo = (key: string) => {
+    Alert.alert('삭제하시겠습니까?', '삭제하시면 되돌릴 수 없습니다.', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '확인',
+        style: 'destructive',
+        onPress: () => {
+          const newToDos = { ...toDos };
+          delete newToDos[key];
+          setToDos(newToDos);
+          saveToDos(newToDos);
+        },
+      },
+    ]);
+  };
+
   useEffect(() => {
     loadToDos();
   }, []);
@@ -78,12 +96,18 @@ export const ToDoScreen: React.FC = () => {
           return (
             <S.ToDoListContainer key={i}>
               <S.ToDoListItem>{toDo.text}</S.ToDoListItem>
-              <TouchableWithoutFeedback onPress={() => checkToDo(key)}>
-                <S.ToDoIcon
-                  {...(toDo.completed ? { name: 'checkcircle' } : { name: 'checkcircleo' })}
-                  size={24}
-                />
-              </TouchableWithoutFeedback>
+              <S.ToDoIconContainer>
+                <TouchableOpacity onPress={() => checkToDo(key)}>
+                  <AntDesign
+                    {...(toDo.completed ? { name: 'checkcircle' } : { name: 'checkcircleo' })}
+                    size={24}
+                    color={colors.skyBlue}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteToDo(key)}>
+                  <AntDesign name="closecircleo" size={24} color={colors.red} />
+                </TouchableOpacity>
+              </S.ToDoIconContainer>
             </S.ToDoListContainer>
           );
         })}
