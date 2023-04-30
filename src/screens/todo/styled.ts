@@ -7,7 +7,7 @@ import { colors } from 'src/styles';
 
 export const ToDoContainer = styled.View`
   flex: 1;
-  padding: 60px 40px;
+  padding: 60px 0;
   flex-direction: column;
   background-color: '#f9f9f9';
 `;
@@ -61,6 +61,7 @@ export const ToDoButton = styled.Text`
 `;
 
 export const ToDoList = styled.ScrollView`
+  padding: 0 40px;
   flex: 1;
   margin-top: 20px;
   margin-bottom: 48px;
@@ -91,7 +92,7 @@ export const ToDoListItem = styled(TextInput)<{ isCompleted: boolean }>`
 
 export const ToDoIconContainer = styled.View`
   flex-direction: row;
-  column-gap: 10px;
+  column-gap: 14px;
   justify-content: space-between;
   align-items: flex-start;
 `;
