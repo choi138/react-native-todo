@@ -1,5 +1,7 @@
-import { AntDesign } from '@expo/vector-icons';
+import { TextInput } from 'react-native';
+
 import styled from 'styled-components/native';
+import { css } from 'styled-components';
 
 import { colors } from 'src/styles';
 
@@ -69,13 +71,22 @@ export const ToDoListContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 16px 0;
+  padding: 18px 0;
 `;
 
-export const ToDoListItem = styled.Text`
+export const ToDoListItem = styled(TextInput)<{ isCompleted: boolean }>`
   font-size: 20px;
   font-weight: 700;
-  color: ${colors.purple};
+  flex: 0.9;
+  ${({ isCompleted }) =>
+    isCompleted
+      ? css`
+          text-decoration-line: line-through;
+          color: ${colors.gray};
+        `
+      : css`
+          color: ${colors.purple};
+        `}
 `;
 
 export const ToDoIconContainer = styled.View`

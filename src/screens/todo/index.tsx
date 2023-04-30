@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Alert } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
@@ -19,10 +18,12 @@ export interface ToDoProps {
 export const STORAGE_TODO_KEY = '@toDos';
 
 export const ToDoScreen: React.FC = () => {
+  const textRef = useRef<Array<TextInput>>([]);
   const [text, setText] = useState<string>('');
   const [toDos, setToDos] = useState<ToDoProps>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [completed, setCompleted] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
 
   const onChangeText = (payload: string) => {
     setText(payload);
@@ -81,6 +82,23 @@ export const ToDoScreen: React.FC = () => {
     ]);
   };
 
+  const editToDo = (key: string, text: string) => {
+    const newToDos = { ...toDos };
+    newToDos[key].text = text;
+    setToDos(newToDos);
+    saveToDos(newToDos);
+  };
+
+  const toggleEdit = (i: number) => {
+    if (edit) {
+      setEdit(false);
+      textRef.current[i].blur();
+    } else {
+      setEdit(true);
+      textRef.current[i].focus();
+    }
+  };
+
   useEffect(() => {
     loadToDos();
   }, []);
@@ -95,17 +113,31 @@ export const ToDoScreen: React.FC = () => {
           const toDo = toDos[key];
           return (
             <S.ToDoListContainer key={i}>
-              <S.ToDoListItem>{toDo.text}</S.ToDoListItem>
+              <S.ToDoListItem
+                ref={(ref) => ref && (textRef.current[i] = ref)}
+                isCompleted={toDo.completed}
+                defaultValue={toDo.text}
+                onChangeText={(text: string) => editToDo(key, text)}
+              />
               <S.ToDoIconContainer>
                 <TouchableOpacity onPress={() => checkToDo(key)}>
                   <AntDesign
                     {...(toDo.completed ? { name: 'checkcircle' } : { name: 'checkcircleo' })}
-                    size={24}
+                    size={26}
                     color={colors.skyBlue}
                   />
                 </TouchableOpacity>
+                {toDo.completed ? (
+                  <TouchableWithoutFeedback>
+                    <AntDesign name="circledowno" size={26} color={colors.mint} />
+                  </TouchableWithoutFeedback>
+                ) : (
+                  <TouchableOpacity onPress={() => toggleEdit(i)}>
+                    <AntDesign name="circledowno" size={26} color={colors.mint} />
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity onPress={() => deleteToDo(key)}>
-                  <AntDesign name="closecircleo" size={24} color={colors.red} />
+                  <AntDesign name="closecircleo" size={26} color={colors.red} />
                 </TouchableOpacity>
               </S.ToDoIconContainer>
             </S.ToDoListContainer>
@@ -115,7 +147,6 @@ export const ToDoScreen: React.FC = () => {
       <S.ToDoInputContainer>
         <S.ToDoInput
           multiline
-          editable
           onChangeText={onChangeText}
           returnKeyType="done"
           value={text}
